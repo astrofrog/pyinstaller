@@ -11,7 +11,7 @@
 # Tested with IPython 4.0.0.
 
 from PyInstaller.compat import modname_tkinter, is_win, is_darwin
-from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 # Ignore 'matplotlib'. IPython contains support for matplotlib.
 # Ignore GUI libraries. IPython supports integration with GUI frameworks.
@@ -24,3 +24,8 @@ if is_win or is_darwin:
     excludedimports.append(modname_tkinter)
 
 datas = collect_data_files('IPython')
+
+# IPython imports extensions by changing to the extensions directory and using
+# importlib.import_module, so we need to copy over the extensions as if they
+# were data files.
+datas += collect_data_files('IPython.extensions', include_py_files=True)
